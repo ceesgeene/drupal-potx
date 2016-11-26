@@ -665,10 +665,15 @@ function _potx_translation_export($translation_export_langcode, $string, $plural
 function _potx_get_header($file, $template_export_langcode = NULL, $api_version = POTX_API_CURRENT) {
   // We only have language to use if we should export with that langcode.
   $language = NULL;
+  if ($template_export_langcode) {
+    $language = \Drupal::service('language_manager')->getLanguage($template_export_langcode);
+    $plurals = \Drupal::service('locale.plural.formula')->getNumberOfPlurals($template_export_langcode);
+    $formula = '(n!=1)';
+  }
 
   $output  = '# $'.'Id'.'$'."\n";
   $output .= "#\n";
-  $output .= '# '. (isset($language) ? $language->name : 'LANGUAGE') .' translation of Drupal ('. $file .")\n";
+  $output .= '# '. (isset($language) ? $language->getName() : 'LANGUAGE') .' translation of Drupal ('. $file .")\n";
   $output .= "# Copyright YEAR NAME <EMAIL@ADDRESS>\n";
   $output .= "# --VERSIONS--\n";
   $output .= "#\n";
@@ -679,12 +684,12 @@ function _potx_get_header($file, $template_export_langcode = NULL, $api_version 
   $output .= '"POT-Creation-Date: '. date("Y-m-d H:iO") ."\\n\"\n";
   $output .= '"PO-Revision-Date: '. (isset($language) ? date("Y-m-d H:iO") : 'YYYY-mm-DD HH:MM+ZZZZ') ."\\n\"\n";
   $output .= "\"Last-Translator: NAME <EMAIL@ADDRESS>\\n\"\n";
-  $output .= "\"Language-Team: ". (isset($language) ? $language->name : 'LANGUAGE') ." <EMAIL@ADDRESS>\\n\"\n";
+  $output .= "\"Language-Team: ". (isset($language) ? $language->getName() : 'LANGUAGE') ." <EMAIL@ADDRESS>\\n\"\n";
   $output .= "\"MIME-Version: 1.0\\n\"\n";
   $output .= "\"Content-Type: text/plain; charset=utf-8\\n\"\n";
   $output .= "\"Content-Transfer-Encoding: 8bit\\n\"\n";
-  if (isset($language->formula) && isset($language->plurals)) {
-    $output .= "\"Plural-Forms: nplurals=". $language->plurals ."; plural=". strtr($language->formula, array('$' => '')) .";\\n\"\n\n";
+  if (isset($formula) && isset($plurals)) {
+    $output .= "\"Plural-Forms: nplurals=". $plurals ."; plural=". $formula) .";\\n\"\n\n";
   }
   else {
     $output .= "\"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\\n\"\n\n";
