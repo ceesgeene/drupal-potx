@@ -691,7 +691,7 @@ function _potx_get_header($file, $template_export_langcode = NULL, $api_version 
   $output .= "\"Content-Type: text/plain; charset=utf-8\\n\"\n";
   $output .= "\"Content-Transfer-Encoding: 8bit\\n\"\n";
   if (isset($formula) && isset($plurals)) {
-    $output .= "\"Plural-Forms: nplurals=". $plurals ."; plural=". $formula) .";\\n\"\n\n";
+    $output .= "\"Plural-Forms: nplurals=". $plurals ."; plural=". $formula .";\\n\"\n\n";
   }
   else {
     $output .= "\"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\\n\"\n\n";
